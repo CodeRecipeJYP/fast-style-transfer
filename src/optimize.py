@@ -13,7 +13,7 @@ DEVICES = 'CUDA_VISIBLE_DEVICES'
 def optimize(content_targets, style_target, content_weight, style_weight,
              tv_weight, vgg_path, epochs=2, print_iterations=1000,
              batch_size=4, save_path='saver/fns.ckpt', slow=False,
-             learning_rate=1e-3, debug=False):
+             learning_rate=1e-3, debug=True):
     if slow:
         batch_size = 1
     mod = len(content_targets) % batch_size
@@ -93,6 +93,7 @@ def optimize(content_targets, style_target, content_weight, style_weight,
         import random
         uid = random.randint(1, 100)
         print("UID: %s" % uid)
+        before_firstepoch_time = time.time()
         for epoch in range(epochs):
             num_examples = len(content_targets)
             iterations = 0
@@ -115,7 +116,8 @@ def optimize(content_targets, style_target, content_weight, style_weight,
                 end_time = time.time()
                 delta_time = end_time - start_time
                 if debug:
-                    print("UID: %s, batch time: %s" % (uid, delta_time))
+                    elapsed_time_in_minites = (time.time() - before_firstepoch_time) / 60
+                    print("UID: %s, curr/num_examples: %5s/%s(%2.5s), epoch: %s, batch time: %s, elapsed time : %s" % (uid, curr, num_examples, float(curr)/num_examples*100, epoch, delta_time, elapsed_time_in_minites/60))
                 is_print_iter = int(iterations) % print_iterations == 0
                 if slow:
                     is_print_iter = epoch % print_iterations == 0
