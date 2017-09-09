@@ -11,9 +11,9 @@ TEST=$CONTENT_DIR$CONTENT_FILENAME
 TEST_DIR=tests/
 CKPT_DIR=ckpts/
 
-BATCH_SIZE=20
+BATCH_SIZE=1
 
-CMD="python style.py --style $STYLE --test $TEST --test-dir $TEST_DIR --checkpoint-dir $CKPT_DIR"
+CMD="python style.py --style $STYLE --test $TEST --test-dir $TEST_DIR --checkpoint-dir $CKPT_DIR --batch-size $BATCH_SIZE"
 
 echo $CMD
 $CMD
