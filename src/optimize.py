@@ -118,7 +118,7 @@ def optimize(content_targets, style_target, content_weight, style_weight,
                 delta_time = end_time - start_time
                 if debug:
                     elapsed_time_in_minites = (time.time() - before_firstepoch_time) / 60
-                    print("UID: %s, curr/num_examples: %5s/%s(%2.5s), epoch: %s, batch time: %s, elapsed time : %s" % (uid, curr, num_examples, float(curr)/num_examples*100, epoch, delta_time, elapsed_time_in_minites/60))
+                    print("UID: %s, step/num_examples: %5s/%s(%2.4s%%), epoch: %s, batch time: %.4ssecs, elapsed time : %.5smins" % (uid, step, num_examples, float(step)/num_examples*100, epoch, delta_time, elapsed_time_in_minites))
                 is_print_iter = int(iterations) % print_iterations == 0
                 if slow:
                     is_print_iter = epoch % print_iterations == 0
