@@ -13,7 +13,7 @@ CKPT_DIR=ckpts/
 
 BATCH_SIZE=1
 
-CMD="nohup python style.py --style $STYLE --test $TEST --test-dir $TEST_DIR --checkpoint-dir $CKPT_DIR --batch-size $BATCH_SIZE &"
+CMD="nohup python style.py --style $STYLE --test $TEST --test-dir $TEST_DIR --checkpoint-dir $CKPT_DIR --batch-size $BATCH_SIZE"
 
 echo $CMD
 $CMD
