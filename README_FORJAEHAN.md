@@ -10,3 +10,16 @@ https://drive.google.com/open?id=0B0A1Nd8c1QloN01jay11SW54QnM
 에서 VGG weight, TraningSet 다운로드
 
 --style examples/style/wave.jpg --checkpoint-dir ckpts --test examples/content/chicago.jpg --test-dir tests/
+
+
+@@@
+1. ALT+F12 = terminal
+2. ALT+4 = 런화면
+3. git pull이 수정한 코드 받아오는거
+4. 충돌시 
+git add .
+git stash
+git pull
+--- 여기까지하면 다운로드 하는것.
+git stash pop (stash에서 저장했던것 원상복구)
+하면 됨
