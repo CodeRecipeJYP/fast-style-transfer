@@ -1,11 +1,17 @@
 from __future__ import print_function
 import sys, os, pdb
+
 sys.path.insert(0, 'src')
-import numpy as np, scipy.misc 
+import numpy as np, scipy.misc
 from optimize import optimize
 from argparse import ArgumentParser
 from utils import save_img, get_img, exists, list_files
 import evaluate
+
+import functools
+import vgg, pdb, time
+import tensorflow as tf, numpy as np, os
+import transform
 
 CONTENT_WEIGHT = 7.5e0
 STYLE_WEIGHT = 1e2
@@ -17,10 +23,11 @@ CHECKPOINT_DIR = 'checkpoints'
 CHECKPOINT_ITERATIONS = 500
 VGG_PATH = 'data/imagenet-vgg-verydeep-19.mat'
 TRAIN_PATH = 'data/train2014'
-SAVE_NAME = 'chicago_ON_music001'
+SAVE_NAME = 'music001_'
 BATCH_SIZE = 4
 DEVICE = '/gpu:0'
 FRAC_GPU = 1
+
 
 def build_parser():
     parser = ArgumentParser()
@@ -70,7 +77,7 @@ def build_parser():
                         dest='content_weight',
                         help='content weight (default %(default)s)',
                         metavar='CONTENT_WEIGHT', default=CONTENT_WEIGHT)
-    
+
     parser.add_argument('--style-weight', type=float,
                         dest='style_weight',
                         help='style weight (default %(default)s)',
@@ -80,13 +87,14 @@ def build_parser():
                         dest='tv_weight',
                         help='total variation regularization weight (default %(default)s)',
                         metavar='TV_WEIGHT', default=TV_WEIGHT)
-    
+
     parser.add_argument('--learning-rate', type=float,
                         dest='learning_rate',
                         help='learning rate (default %(default)s)',
                         metavar='LEARNING_RATE', default=LEARNING_RATE)
 
     return parser
+
 
 def check_opts(opts):
     exists(opts.checkpoint_dir, "checkpoint dir not found!")
@@ -105,11 +113,12 @@ def check_opts(opts):
     assert opts.tv_weight >= 0
     assert opts.learning_rate >= 0
 
+
 def _get_files(img_dir):
     files = list_files(img_dir)
-    return [os.path.join(img_dir,x) for x in files]
+    return [os.path.join(img_dir, x) for x in files]
 
-    
+
 def main():
     parser = build_parser()
     options = parser.parse_args()
@@ -122,12 +131,12 @@ def main():
         content_targets = [options.test]
 
     kwargs = {
-        "slow":options.slow,
-        "epochs":options.epochs,
-        "print_iterations":options.checkpoint_iterations,
-        "batch_size":options.batch_size,
-        "save_path":os.path.join(options.checkpoint_dir,'fns.ckpt'),
-        "learning_rate":options.learning_rate
+        "slow": options.slow,
+        "epochs": options.epochs,
+        "print_iterations": options.checkpoint_iterations,
+        "batch_size": options.batch_size,
+        "save_path": os.path.join(options.checkpoint_dir, 'fns.ckpt'),
+        "learning_rate": options.learning_rate
     }
 
     if options.slow:
@@ -145,24 +154,25 @@ def main():
         options.vgg_path
     ]
 
-    for preds, losses, i, epoch in optimize(*args, **kwargs):
-        style_loss, content_loss, tv_loss, loss = losses
+#    with tf.Graph().as_default(), tf.device('/cpu:0'), tf.Session() as sess:
+#        init_op = tf.global_variables_initializer()
+#        saver = tf.train.Saver()
+#        saver.restore(sess, options.checkpoint_dir)
 
-        print('Epoch %d, Iteration: %d, Loss: %s' % (epoch, i, loss))
-        to_print = (style_loss, content_loss, tv_loss)
-        print('style: %s, content:%s, tv: %s' % to_print)
-        if options.test:
-            assert options.test_dir != False
-            preds_path = '%s/' % (options.test_dir) + SAVE_NAME + '%s_%s.png' % (epoch,i)
-            if not options.slow:
-                ckpt_dir = os.path.dirname(options.checkpoint_dir)
-                evaluate.ffwd_to_img(options.test,preds_path,
-                                     options.checkpoint_dir)
-            else:
-                save_img(preds_path, img)
-    ckpt_dir = options.checkpoint_dir
-    cmd_text = 'python evaluate.py --checkpoint %s ...' % ckpt_dir
-    print("Training complete. For evaluation:\n    `%s`" % cmd_text)
+
+    print('options.test: ' + options.test)
+    print('options.checkpoint_der: ' + options.checkpoint_dir)
+
+    for index_image in range(0,20):
+        options.test = '../image_style_dataset/' + 'structure' + str(index_image+1).zfill(4) + '.jpg'
+        print(options.test)
+        preds_path = '%s/' % (options.test_dir) + SAVE_NAME + '%s_%s.png' % (999,index_image)
+        if not options.slow:
+            ckpt_dir = os.path.dirname(options.checkpoint_dir)
+            evaluate.ffwd_to_img(options.test, preds_path,
+                                 options.checkpoint_dir)
+        else:
+            save_img(preds_path, img)
 
 if __name__ == '__main__':
     main()
