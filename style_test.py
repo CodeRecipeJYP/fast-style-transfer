@@ -159,20 +159,26 @@ def main():
 #        saver = tf.train.Saver()
 #        saver.restore(sess, options.checkpoint_dir)
 
-
     print('options.test: ' + options.test)
     print('options.checkpoint_der: ' + options.checkpoint_dir)
+    preds_path = '%s/' % (options.test_dir) + SAVE_NAME + '%s_%s.png' % (999,1)
+    print('preds_path: %s' % preds_path)
+    if not options.slow:
+        ckpt_dir = os.path.dirname(options.checkpoint_dir)
+        evaluate.ffwd_to_img(options.test, preds_path,
+                             options.checkpoint_dir)
+    else:
+        save_img(preds_path, img)
 
-    for index_image in range(0,20):
-        options.test = '../image_style_dataset/' + 'structure' + str(index_image+1).zfill(4) + '.jpg'
-        print(options.test)
-        preds_path = '%s/' % (options.test_dir) + SAVE_NAME + '%s_%s.png' % (999,index_image)
-        if not options.slow:
-            ckpt_dir = os.path.dirname(options.checkpoint_dir)
-            evaluate.ffwd_to_img(options.test, preds_path,
-                                 options.checkpoint_dir)
-        else:
-            save_img(preds_path, img)
+    # remaining_in = data_in[num_iters * batch_size:]
+    # remaining_out = paths_out[num_iters * batch_size:]
+    # if len(remaining_in) > 0:
+    #     ffwd(remaining_in, remaining_out, checkpoint_dir,
+    #          device_t=device_t, batch_size=1)
+
+    print('Press enter...')
+    input()
+
 
 if __name__ == '__main__':
     main()
