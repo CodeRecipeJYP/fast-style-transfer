@@ -18,4 +18,4 @@ VGG_PATH=/media/ubuntu/bc8228a2-528b-4e89-a7b6-4fa1a7a10526/fast-style-transfer-
 CMD="nohup python3 style_test.py --style $STYLE --checkpoint-dir $CKPT_DIR --test $TEST --test-dir $TEST_DIR --vgg-path $VGG_PATH"
 
 echo $CMD
-$CMD
+$CMD &
